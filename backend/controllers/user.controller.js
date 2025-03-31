@@ -42,7 +42,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
         message: "Invalid credentials",
@@ -92,7 +92,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    return response.clearCookie("token").status(200).json({
+    return res.clearCookie("token").status(200).json({
       message: "Logged out successfully",
       success: true,
     });

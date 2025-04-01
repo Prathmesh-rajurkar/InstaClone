@@ -4,6 +4,7 @@ import { response } from "express";
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
+import { log } from "console";
 
 export const register = async (req, res) => {
   try {
@@ -104,7 +105,7 @@ export const logout = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const userId = req.params.id;
-    let user = await User.findById(userId);
+    let user = await User.findById(userId).select('-password');
     return res.status(200).json({
       message: "User found",
       success: true,
@@ -118,20 +119,22 @@ export const getProfile = async (req, res) => {
 export const editProfile = async (req, res) => {
   try {
     const userId = req.id;
+    console.log(req.id,req.body);
     const { bio, gender } = req.body;
     const profilePicture = req.file;
     let cloudResponse;
-    if (profilePicture) {
-      const fileUri = getDataUri(profilePicture);
-      await cloudinary.uploader.upload(fileUri);
-    }
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('-password');
     if (!user) {
       return res.status(404).json({
         message: "User Not Found",
         success: false,
       });
     }
+    if (profilePicture) {
+      const fileUri = getDataUri(profilePicture);
+      cloudResponse = await cloudinary.uploader.upload(fileUri);
+    }
+    
     if (bio) {
       user.bio = bio;
     }
@@ -152,8 +155,8 @@ export const editProfile = async (req, res) => {
 
 export const getSuggestedUser = async (req, res) => {
   try {
-    const suggestedUsers = await User.find({ _id: { $ne: req._id } }).select(
-      "password"
+    const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select(
+      "-password"
     );
     if (!suggestedUsers) {
       return res.status(402).json({
@@ -192,7 +195,7 @@ export const followOrUnfollow = async (req, res) => {
     }
 
     // now check wheather to follow or unfollow
-    const isFollowing = targetUser.followings.includes(targetUserID);
+    const isFollowing = loggedInUser.followings.includes(targetUserID);
     if (isFollowing){
       // unfollow logic
       await Promise.all([

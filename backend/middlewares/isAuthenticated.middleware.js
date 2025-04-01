@@ -9,14 +9,14 @@ const isAuthenticated = async (req, res, next) => {
                 success:false
             })
         }
-        const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = await jwt.verify(token, process.env.SECRET_KEY);
         if(!decoded){
             return res.status(401).json({
                 message:"InValid",
                 success:false
             })
         }
-        req.userId = decoded.userId;
+        req.id = decoded.userId;
         next();
     } catch (error) {
         console.log(error);

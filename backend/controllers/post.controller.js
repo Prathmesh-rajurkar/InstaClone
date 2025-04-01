@@ -198,12 +198,40 @@ export const deletePost = async (req, res) => {
         success: false,
       });
     }
+    await Post.findByIdAndDelete(postId);
+
     const user = await User.findById(authorId);
     user.posts.pull(postId);
-    await Post.findByIdAndDelete(postId);
+    await user.save()
+
+    await Comment.deleteMany({post:postId});
 
     return res.status(200).json({ message: "post deleted", success: true });
   } catch (error) {
     console.log(error);
   }
 };
+
+export const bookmarkPost = async (req,res) => {
+  try {
+    const postId = req.params.id;
+    const authorId = req.id;
+    const post = await Post.findById(postId)
+    if (!post) return res.status(400).json({message:"post not found",success:false});
+
+    const user = User.findById(authorId)
+    if (user.bookmarks.include(post._id)) {
+      // already bookmarked remove it
+      await user.updateOne({$pull:{bookmarks:post._id}});
+      await user.save()
+
+      return res.status(200).json({message:"post removed from bookmark",success:true});
+    }else {
+      // bookmark
+      await user.updateOne({$addToSet:{bookmarks:post._id}});
+      return res.status(200).json({message:"post bookmarked",success:true});
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}

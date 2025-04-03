@@ -12,6 +12,7 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import axios from "axios";
 
 const sidebarItems = [
     {
@@ -64,6 +65,7 @@ function LeftSidebar() {
                 toast.success(res.data.message);
             }
         } catch (error) {
+            console.log(error);
             toast.error(error.response.data.message);
         }
     };
@@ -73,9 +75,9 @@ function LeftSidebar() {
         }
     };
     return (
-        <div className="fixed top-0 z-10 left-0 px-4 border-gray-300 w-{16%} h-screen">
+        <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen'>
             <div className="flex flex-col">
-                <span>
+                <span className="my-8 pl-3 font-bold text-2xl flex items-center gap-2">
                     <InstagramIcon />
                     Instagram
                 </span>

@@ -5,8 +5,8 @@ import RightSidebar from './RightSidebar'
 
 function Home() {
     return (
-        <div className='flex flex-col'>
-            <div className="flex-grow flex flex-col">
+        <div className='flex'>
+            <div className="flex-grow flex">
                 <Feed />
                 <Outlet />
             </div>

@@ -5,7 +5,7 @@ import RightSidebar from './RightSidebar'
 
 function Home() {
     return (
-        <div className='flex'>
+        <div className='flex w-screen'>
             <div className="flex-grow flex">
                 <Feed />
                 <Outlet />

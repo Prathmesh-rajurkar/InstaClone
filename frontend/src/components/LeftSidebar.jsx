@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
+import CreatePost from "./CreatePost";
 
 
 function LeftSidebar() {
@@ -39,6 +40,12 @@ function LeftSidebar() {
     const sidebarHandler = (textType) => {
         if (textType === "Logout") {
             logoutHandler();
+        }
+        if (textType === "Home") {
+            navigate("/");
+        }
+        if (textType === "Create"){
+            StethoscopeIcon(true);
         }
     };
     const sidebarItems = [
@@ -102,7 +109,9 @@ function LeftSidebar() {
                     })}
                 </div>
             </div>
+            <CreatePost open={open} setOpen={setOpen(true)}/>
         </div>
+
     );
 }
 

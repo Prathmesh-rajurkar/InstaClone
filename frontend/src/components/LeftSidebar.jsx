@@ -8,7 +8,7 @@ import {
     Search,
     TrendingUp,
 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -22,6 +22,7 @@ function LeftSidebar() {
     const navigate = useNavigate();
     const { user } = useSelector(store => store.auth);
     const dispatch = useDispatch();
+    const [open, setOpen] = useState(false);
     const logoutHandler = async () => {
         try {
             const res = await axios.get("http://localhost:3000/api/v1/user/logout", {
@@ -44,8 +45,8 @@ function LeftSidebar() {
         if (textType === "Home") {
             navigate("/");
         }
-        if (textType === "Create"){
-            StethoscopeIcon(true);
+        if (textType === "Create") {
+            setOpen(true);
         }
     };
     const sidebarItems = [
@@ -109,7 +110,7 @@ function LeftSidebar() {
                     })}
                 </div>
             </div>
-            <CreatePost open={open} setOpen={setOpen(true)}/>
+            <CreatePost open={open} setOpen={setOpen} />
         </div>
 
     );

@@ -8,6 +8,9 @@ export const addNewPost = async (req, res) => {
   try {
     const { caption } = req.body;
     const image = req.file;
+    console.log(req.body);
+    console.log(req.file);
+    
     const authorId = req.id;
     const user = await User.findById(authorId);
 

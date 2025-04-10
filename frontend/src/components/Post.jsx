@@ -5,7 +5,8 @@ import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
 import { Button } from './ui/button';
 import { FaRegHeart } from "react-icons/fa";
 import CommentDialog from './CommentDialog';
-function Post() {
+
+function Post({post}) {
     const [text,setText] = useState("");
     const changeEventHandler = (e) =>{
         const inputText = e.target.value;
@@ -18,13 +19,13 @@ function Post() {
     const [open,setOpen] = useState(false);
     return (
         <div className='my-8 w-full max-w-sm mx-auto'>
-            <div className='flex items-center justify-between'>
+            <div className='mb-2 flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
                     <Avatar>
-                        <AvatarImage src='' />
+                        <AvatarImage src={post?.author?.profilePicture} />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <h6>username</h6>
+                    <h6>{post.author.username}</h6>
                 </div>
                 <Dialog >
                     <DialogTrigger asChild>
@@ -37,7 +38,7 @@ function Post() {
                     </DialogContent>
                 </Dialog>
             </div>
-            <img className='rounded-sm w-full aspect-square object-cover' src="https://images.unsplash.com/photo-1732919258508-3fd53a8007b6?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="no image found" />
+            <img className='rounded-sm w-full aspect-square object-cover' src={post.image} alt="no image found" />
 
             <div className='flex items-center justify-between mt-2'>
 
@@ -48,12 +49,13 @@ function Post() {
                 </div>
                 <Bookmark className='cursor-pointer hover:text-gray-600' />
             </div>
-            <span className='font-medium block mb-2'>1k likes</span>
+            <span className='font-medium block mb-2'>{post.likes.length} likes</span>
             <p>
-                <span className='font-medium mr-2'>username</span>
-                caption
+                <span className='font-medium mr-2'>{post.author.username}</span>
+                {post.caption}
             </p>
-            <span onClick={() => setOpen(true)} className='text-gray-500 cursor-pointer'>View all 10 comments...</span>
+            <span onClick={() => setOpen(true)} className='text-gray-500 cursor-pointer'>
+                {post.comments.length > 0 && `View all ${post.comments.length} comments...`}</span>
             <CommentDialog open={open} setOpen={setOpen} />
             <div className='flex items-center justify-between'>
                 <input type="text" placeholder='Add a comment' value={text} onChange={changeEventHandler} className=' bg-white outline-none text-sm w-full' />

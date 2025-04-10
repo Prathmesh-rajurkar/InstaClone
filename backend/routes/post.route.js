@@ -11,10 +11,11 @@ import {
   getPostById,
 } from "../controllers/post.controller.js";
 import { likePost } from "../controllers/post.controller.js";
+import upload from "../middlewares/multer.js";
 
 const router = express.Router();
 
-router.route("/addpost").post(isAuthenticated, addNewPost);
+router.route("/addpost").post(isAuthenticated, upload.single('image'),addNewPost);
 router.route("/all").get(isAuthenticated, getAllPost);
 router.route("/userpost/all").get(isAuthenticated, getPostById);
 router.route("/:id/like").get(isAuthenticated, likePost);

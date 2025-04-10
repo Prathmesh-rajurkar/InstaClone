@@ -7,12 +7,20 @@ import { Comment } from "../models/comments.model.js";
 export const addNewPost = async (req, res) => {
   try {
     const { caption } = req.body;
+    // console.log(req);
+
     const image = req.file;
-    console.log(req.body);
-    console.log(req.file);
+    // console.log(req.body);
+    // console.log(req.file);
     
     const authorId = req.id;
     const user = await User.findById(authorId);
+    if (!user) {
+      return res.status(400).json({ 
+        message: "User not found",
+        success: false 
+      });
+    }
 
     if (!image) return res.status(400).json({ message: "Image required" });
 
@@ -21,7 +29,7 @@ export const addNewPost = async (req, res) => {
       .toFormat("jpeg", { quality: 80 })
       .toBuffer();
 
-    const fileUri = `data:image/jpeg:base64,${optimizedImageBuffer.toString(
+    const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString(
       "base64"
     )}`;
     const cloudResponse = await cloudinary.uploader.upload(fileUri);
@@ -31,7 +39,7 @@ export const addNewPost = async (req, res) => {
       image: cloudResponse.secure_url,
       author: authorId,
     });
-    if (!user) {
+    if (user) {
       user.posts.push(post._id);
       await user.save();
     }
@@ -51,10 +59,10 @@ export const getAllPost = async (req, res) => {
   try {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate({ path: "author", select: "username,profilePicture" })
+      .populate({ path: "author", select: "username profilePicture" })
       .populate({
         path: "comments",
-        populate: { path: "author", select: "username,profilePicture" },
+        populate: { path: "author", select: "username profilePicture" },
       });
 
     return res.status(200).json({

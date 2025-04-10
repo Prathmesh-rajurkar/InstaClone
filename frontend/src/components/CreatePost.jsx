@@ -8,6 +8,8 @@ import { readFileAsDataURL } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { store } from '@/redux/store';
 // import { preview } from 'vite';
 
 function CreatePost({ open, setOpen }) {
@@ -16,6 +18,8 @@ function CreatePost({ open, setOpen }) {
     const [caption, setCaption] = useState("");
     const [imagePreview, setImagePreview] = useState("");
     const [loading, setLoading] = useState(false);
+    const {user} = useSelector(store=>store.auth);
+
     const fileChangeHandler = async (e) => {
         const file = e.target.files?.[0];
         // console.log(e.target.files);
@@ -32,35 +36,44 @@ function CreatePost({ open, setOpen }) {
     }
     const createPostHandler = async (e) => {
         e.preventDefault();
+        if (!file) {
+            toast.error("Please select an image");
+            return;
+        }
+
         const formData = new FormData();
         formData.append('caption', caption);
-        // console.log(file);
-
-        formData.append('image', file);
+        
+        // Compress image before sending
         try {
             setLoading(true);
-            console.log(file);
-            console.log('_____________________________');
-            console.log(caption);
-            console.log('_____________________________');
-            console.log(formData);
+            // Append the original file name to maintain extension
+            formData.append('image', file, file.name);
+            
+            const res = await axios.post('http://localhost:3000/api/v1/post/addpost', 
+                formData, 
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    withCredentials: true,
+                    maxBodyLength: Infinity, // Add this line
+                    maxContentLength: Infinity // Add this line
+                }
+            );
 
-
-
-            const res = await axios.post('http://localhost:3000/api/v1/post/addpost', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                withCredentials: true
-            });
             if (res.data.success) {
                 toast.success(res.data.message);
+                setOpen(false);
+                setFile(null);
+                setCaption("");
+                setImagePreview("");
             }
         } catch (error) {
+            console.error('Upload error:', error);
             toast.error(error?.response?.data?.message || "Something went wrong");
-            console.log(error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
@@ -74,12 +87,12 @@ function CreatePost({ open, setOpen }) {
                 <DialogHeader className='text-center font-semibold'>Create New Post</DialogHeader>
                 <div className='flex gap-3 items-center'>
                     <Avatar>
-                        <AvatarImage src='' alt='img' />
+                        <AvatarImage src={user?.profilePicture} alt='img' />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div>
-                        <h1 className='font-semibold text-xs'>Username</h1>
-                        <span className='text-gray-600 text-xs'>Bio here...</span>
+                        <h1 className='font-semibold text-xs'>{user?.username}</h1>
+                        <span className='text-gray-600 text-xs'>{user.bio}</span>
                     </div>
                 </div>
                 {
@@ -93,7 +106,7 @@ function CreatePost({ open, setOpen }) {
 
                 <Button onClick={() => imageRef.current.click()} className='w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf] '>
                     Select from Computer
-                </Button><input ref={imageRef} onChange={fileChangeHandler} type='file' accept='.png,.jpg,.jpeg' className='w-full mt-2 hidden' />
+                </Button><input ref={imageRef} onChange={fileChangeHandler} type='file' accept='image/*' className='w-full mt-2 hidden' />
                 {
                     imagePreview && (
                         loading ? (

@@ -10,6 +10,8 @@ import { persistStore } from 'redux-persist'
 
 let persistor = persistStore(store)
 
+// persistor.purge();
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>

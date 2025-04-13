@@ -5,6 +5,8 @@ import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react';
 import { Button } from './ui/button';
 import { FaRegHeart } from "react-icons/fa";
 import CommentDialog from './CommentDialog';
+import { store } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
 function Post({post}) {
     const [text,setText] = useState("");
@@ -17,6 +19,7 @@ function Post({post}) {
         }
     } 
     const [open,setOpen] = useState(false);
+    const {user} = useSelector(store=>store.auth)
     return (
         <div className='my-8 w-full max-w-sm mx-auto'>
             <div className='mb-2 flex items-center justify-between'>
@@ -34,7 +37,10 @@ function Post({post}) {
                     <DialogContent className="flex flex-col items-center text-sm text-center">
                         <Button variant='ghost' className='cursor-pointer w-fit text-[#ed4956]'>Unfollow</Button>
                         <Button variant='ghost' className='cursor-pointer w-fit text-white'>Add To Favorite</Button>
+                        {
+                            user && user._id === post.author._id &&
                         <Button variant='ghost' className='cursor-pointer w-fit text-white'>Delete</Button>
+                        }
                     </DialogContent>
                 </Dialog>
             </div>

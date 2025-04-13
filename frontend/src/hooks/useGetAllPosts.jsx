@@ -16,11 +16,10 @@ const useGetAllPosts = () => {
                 }
             } catch (error) {
                 console.log(error);
-
             }
         }
         fetchAllPost();
-    },[]);
+    });
 };
 
 export default useGetAllPosts;

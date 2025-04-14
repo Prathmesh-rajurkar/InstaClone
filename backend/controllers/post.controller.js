@@ -78,7 +78,7 @@ export const getPostById = async (req, res) => {
   try {
     const authorId = req.id;
     const posts = await Post.find({ author: authorId })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .populate({ path: "author", select: "username,profilePicture" })
       .populate({
         path: "comments",
@@ -197,12 +197,16 @@ export const getCommentsOfPost = async (req, res) => {
 export const deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
+    // console.log(postId);
     const authorId = req.id;
+    // console.log(authorId);
     const post = await Post.findById(postId);
     if (!post)
       return res
         .status(400)
         .json({ message: "post not found", success: false });
+    console.log(post.author.toString(), authorId);
+    
     if (post.author.toString() !== authorId) {
       return res.status(403).json({
         message: "You are not authorized to delete this post",

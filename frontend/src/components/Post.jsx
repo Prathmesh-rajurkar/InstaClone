@@ -6,10 +6,14 @@ import { Button } from './ui/button';
 import { FaRegHeart } from "react-icons/fa";
 import CommentDialog from './CommentDialog';
 import { store } from '@/redux/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'sonner';
+import axios from 'axios';
+import { setPosts } from '@/redux/postSlice';
 
 function Post({post}) {
     const [text,setText] = useState("");
+    const dispatch = useDispatch()
     const changeEventHandler = (e) =>{
         const inputText = e.target.value;
         if(inputText.trim()){
@@ -18,6 +22,24 @@ function Post({post}) {
             setText("")
         }
     } 
+    const {posts} = useSelector(store=>store.post)
+    const deletePostHandler = async () => {
+        try {
+            const res = await axios.delete(`http://localhost:3000/api/v1/post/delete/${post._id}`, {
+                withCredentials: true,
+            })
+            if (res.data.success){
+                const updatedPostData = posts.filter((item) => item._id !== post._id);
+                dispatch(setPosts(updatedPostData))
+                toast.success(res.data.message)
+            } else {
+                toast.error(res.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error?.response?.data?.message || "Something went wrong")
+        }
+    }
     const [open,setOpen] = useState(false);
     const {user} = useSelector(store=>store.auth)
     return (
@@ -39,7 +61,7 @@ function Post({post}) {
                         <Button variant='ghost' className='cursor-pointer w-fit text-white'>Add To Favorite</Button>
                         {
                             user && user._id === post.author._id &&
-                        <Button variant='ghost' className='cursor-pointer w-fit text-white'>Delete</Button>
+                        <Button variant='ghost' onClick={deletePostHandler} className='cursor-pointer w-fit text-white'>Delete</Button>
                         }
                     </DialogContent>
                 </Dialog>

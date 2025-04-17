@@ -14,6 +14,9 @@ import { setPosts } from '@/redux/postSlice';
 function Post({post}) {
     const [text,setText] = useState("");
     const dispatch = useDispatch()
+    const {user} = useSelector(store=>store.auth)
+    const [liked,setLiked] = useState(post.likes.includes(user?._id) || false);
+    const [postLike,setPostLike] = useState(post.likes.length);
     const changeEventHandler = (e) =>{
         const inputText = e.target.value;
         if(inputText.trim()){
@@ -23,6 +26,20 @@ function Post({post}) {
         }
     } 
     const {posts} = useSelector(store=>store.post)
+    const likeOrDislikeHandler = async () => {
+        try {
+            const action = liked ? 'dislike' : 'like' ;
+            const res = await axios.get(`http://localhost:3000/api/v1/post/${post._id}/${action}`, {withCredentials: true});
+            if (res.data.success){
+                const updatedLikes = liked ? postLike-1 : postLike+1
+                setLiked(!liked);
+                setPostLike(updatedLikes)
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const deletePostHandler = async () => {
         try {
             const res = await axios.delete(`http://localhost:3000/api/v1/post/delete/${post._id}`, {
@@ -41,7 +58,7 @@ function Post({post}) {
         }
     }
     const [open,setOpen] = useState(false);
-    const {user} = useSelector(store=>store.auth)
+
     return (
         <div className='my-8 w-full max-w-sm mx-auto'>
             <div className='mb-2 flex items-center justify-between'>
@@ -71,7 +88,7 @@ function Post({post}) {
             <div className='flex items-center justify-between mt-2'>
 
                 <div className='flex items-center justify-between gap-3'>
-                    <FaRegHeart size={'22px'} className='cursor-pointer hover:text-gray-600' />
+                    <FaRegHeart onClick={likeOrDislikeHandler} size={'22px'} className='cursor-pointer hover:text-gray-600' />
                     <MessageCircle onClick={() => setOpen(true)} className='cursor-pointer hover:text-gray-600' />
                     <Send className='cursor-pointer hover:text-gray-600' />
                 </div>

@@ -24,15 +24,10 @@ function CreatePost({ open, setOpen }) {
     const {posts} = useSelector(store=>store.post);
     const fileChangeHandler = async (e) => {
         const file = e.target.files?.[0];
-        // console.log(e.target.files);
-        // console.log("/////////////");
-        // console.log(file);
         if (file) {
             setFile(file)
             const dataURL = await readFileAsDataURL(file);
             setImagePreview(dataURL)
-            // console.log(dataURL);
-
         }
 
     }

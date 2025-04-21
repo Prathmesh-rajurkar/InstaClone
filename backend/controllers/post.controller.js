@@ -12,13 +12,13 @@ export const addNewPost = async (req, res) => {
     const image = req.file;
     // console.log(req.body);
     // console.log(req.file);
-    
+
     const authorId = req.id;
     const user = await User.findById(authorId);
     if (!user) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "User not found",
-        success: false 
+        success: false,
       });
     }
 
@@ -144,7 +144,7 @@ export const addComment = async (req, res) => {
     const authorId = req.id;
 
     const { text } = req.body;
-    const post = await Post.findById(posts);
+    const post = await Post.findById(postId);
     if (!text)
       return res
         .status(400)
@@ -206,7 +206,7 @@ export const deletePost = async (req, res) => {
         .status(400)
         .json({ message: "post not found", success: false });
     console.log(post.author.toString(), authorId);
-    
+
     if (post.author.toString() !== authorId) {
       return res.status(403).json({
         message: "You are not authorized to delete this post",
@@ -217,9 +217,9 @@ export const deletePost = async (req, res) => {
 
     const user = await User.findById(authorId);
     user.posts.pull(postId);
-    await user.save()
+    await user.save();
 
-    await Comment.deleteMany({post:postId});
+    await Comment.deleteMany({ post: postId });
 
     return res.status(200).json({ message: "post deleted", success: true });
   } catch (error) {
@@ -227,24 +227,31 @@ export const deletePost = async (req, res) => {
   }
 };
 
-export const bookmarkPost = async (req,res) => {
+export const bookmarkPost = async (req, res) => {
   try {
     const postId = req.params.id;
     const authorId = req.id;
-    const post = await Post.findById(postId)
-    if (!post) return res.status(400).json({message:"post not found",success:false});
+    const post = await Post.findById(postId);
+    if (!post)
+      return res
+        .status(400)
+        .json({ message: "post not found", success: false });
 
-    const user = User.findById(authorId)
+    const user = User.findById(authorId);
     if (user.bookmarks.include(post._id)) {
       // already bookmarked remove it
-      await user.updateOne({$pull:{bookmarks:post._id}});
-      await user.save()
+      await user.updateOne({ $pull: { bookmarks: post._id } });
+      await user.save();
 
-      return res.status(200).json({message:"post removed from bookmark",success:true});
-    }else {
+      return res
+        .status(200)
+        .json({ message: "post removed from bookmark", success: true });
+    } else {
       // bookmark
-      await user.updateOne({$addToSet:{bookmarks:post._id}});
-      return res.status(200).json({message:"post bookmarked",success:true});
+      await user.updateOne({ $addToSet: { bookmarks: post._id } });
+      return res
+        .status(200)
+        .json({ message: "post bookmarked", success: true });
     }
   } catch (error) {
     console.log(error);

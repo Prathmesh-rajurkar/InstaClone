@@ -58,11 +58,11 @@ export const addNewPost = async (req, res) => {
 export const getAllPost = async (req, res) => {
   try {
     const posts = await Post.find()
-      .sort({ createdAt: 1 })
-      .populate({ path: "author", select: "username profilePicture" })
+      .sort({ createdAt: -1 })
+      .populate({ path: "author", select: "username profilePicture bio" })
       .populate({
         path: "comments",
-        populate: { path: "author", select: "username profilePicture" },
+        populate: { path: "author", select: "username profilePicture bio" },
       });
 
     return res.status(200).json({
@@ -79,10 +79,10 @@ export const getPostById = async (req, res) => {
     const authorId = req.id;
     const posts = await Post.find({ author: authorId })
       .sort({ createdAt: 1 })
-      .populate({ path: "author", select: "username,profilePicture" })
+      .populate({ path: "author", select: "username profilePicture" })
       .populate({
         path: "comments",
-        populate: { path: "author", select: "username,profilePicture" },
+        populate: { path: "author", select: "username profilePicture" },
       });
 
     return res.status(200).json({
@@ -162,10 +162,11 @@ export const addComment = async (req, res) => {
 
     await comment.populate({
       path: "author",
-      select: "username,profilePicture",
+      select: "username profilePicture bio",
     });
     post.comments.push(comment._id);
     await comment.save();
+    await post.save();
 
     return res
       .status(200)
@@ -181,7 +182,7 @@ export const getCommentsOfPost = async (req, res) => {
     // const post = await Post.findById(postId)
     const comments = await Comment.find({ post: postId }).populate({
       path: "author",
-      select: "username,profilePicture",
+      select: "username profilePicture",
     });
     if (!comments)
       return res

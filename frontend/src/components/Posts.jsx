@@ -8,7 +8,7 @@ function Posts() {
     // useGetAllPosts();
     const {posts} = useSelector(store=>store.post)
     return (
-        <div>
+        <div className='flex flex-col items-center justify-between pl-[20%]'>
             {
                 posts.map((post) => <Post key={post._id} post={post} />)
             }

@@ -9,8 +9,8 @@ function Home() {
     useGetAllPosts();
     useGetSuggestedUsers();
     return (
-        <div className='flex w-screen'>
-            <div className="flex-grow flex">
+        <div className='flex w-screen box-border'>
+            <div className="flex-grow w-[75%] flex items-center">
                 <Feed />
                 <Outlet />
             </div>

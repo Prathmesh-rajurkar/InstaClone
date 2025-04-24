@@ -4,7 +4,7 @@ import LeftSidebar from './LeftSidebar'
 
 function MainLayout() {
     return (
-        <div className='w-screen flex '>
+        <div className='w-screen flex box-border'>
             <LeftSidebar />
             <div className='flex flex-col flex-1'>
                 <Outlet />

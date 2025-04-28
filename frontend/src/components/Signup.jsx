@@ -21,7 +21,7 @@ function Signup() {
         e.preventDefault();
         try {
             const res = await axios.post(
-                "http://localhost:3000/api/v1/user/register",
+                "https://instaclone-wxtx.onrender.com/api/v1/user/register",
                 input,
                 {
                     headers: {

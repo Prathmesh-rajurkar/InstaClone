@@ -47,7 +47,7 @@ function CreatePost({ open, setOpen }) {
             // Append the original file name to maintain extension
             formData.append('image', file, file.name);
             
-            const res = await axios.post('http://localhost:3000/api/v1/post/addpost', 
+            const res = await axios.post('https://instaclone-wxtx.onrender.com/api/v1/post/addpost', 
                 formData, 
                 {
                     headers: {
@@ -90,7 +90,7 @@ function CreatePost({ open, setOpen }) {
                     </Avatar>
                     <div>
                         <h1 className='font-semibold text-xs'>{user?.username}</h1>
-                        <span className='text-gray-600 text-xs'>{user.bio}</span>
+                        <span className='text-gray-600 text-xs'>{user?.bio}</span>
                     </div>
                 </div>
                 {

@@ -10,7 +10,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
 import { Badge } from "./ui/badge";
-
+// https://instaclone-wxtx.onrender.com
 const Post = ({ post }) => {
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ const Post = ({ post }) => {
         try {
             const action = liked ? "dislike" : "like";
             const res = await axios.get(
-                `http://localhost:3000/api/v1/post/${post._id}/${action}`,
+                `https://instaclone-wxtx.onrender.com/api/v1/post/${post._id}/${action}`,
                 { withCredentials: true }
             );
             console.log(res.data);
@@ -66,7 +66,7 @@ const Post = ({ post }) => {
     const commentHandler = async () => {
         try {
             const res = await axios.post(
-                `http://localhost:3000/api/v1/post/${post._id}/comment`,
+                `https://instaclone-wxtx.onrender.com/api/v1/post/${post._id}/comment`,
                 { text },
                 {
                     headers: {
@@ -96,7 +96,7 @@ const Post = ({ post }) => {
     const deletePostHandler = async () => {
         try {
             const res = await axios.delete(
-                `http://localhost:3000/api/v1/post/delete/${post?._id}`,
+                `https://instaclone-wxtx.onrender.com/api/v1/post/delete/${post?._id}`,
                 { withCredentials: true }
             );
             if (res.data.success) {
@@ -115,7 +115,7 @@ const Post = ({ post }) => {
     const bookmarkHandler = async () => {
         try {
             const res = await axios.get(
-                `http://localhost:3000/api/v1/post/${post?._id}/bookmark`,
+                `https://instaclone-wxtx.onrender.com/api/v1/post/${post?._id}/bookmark`,
                 { withCredentials: true }
             );
             if (res.data.success) {

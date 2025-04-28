@@ -25,7 +25,7 @@ function LeftSidebar() {
     const [open, setOpen] = useState(false);
     const logoutHandler = async () => {
         try {
-            const res = await axios.get("http://localhost:3000/api/v1/user/logout", {
+            const res = await axios.get("https://instaclone-wxtx.onrender.com/api/v1/user/logout", {
                 withCredentials: true,
             });
             if (res.data.success) {

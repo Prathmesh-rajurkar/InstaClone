@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://instaclone-wxtx.onrender.com',
   credentials: true
 }));
 app.use(urlencoded({ extended: true }));

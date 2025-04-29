@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import MainLayout from "./components/MainLayout";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 function App() {
   const browserRouter = createBrowserRouter([

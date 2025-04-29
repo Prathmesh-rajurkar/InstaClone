@@ -11,27 +11,34 @@ function App() {
   const browserRouter = createBrowserRouter([
     {
       path: "/",
-      element: <MainLayout />,
+      element: <ProtectedRoutes><MainLayout /></ProtectedRoutes>,
       children: [
         {
-          path: "/profile",
-          element: <Profile />,
+          path: '/',
+          element: <ProtectedRoutes><Home /></ProtectedRoutes>
         },
         {
-          path: "/",
-          element: <Home />,
+          path: '/profile/:id',
+          element: <ProtectedRoutes> <Profile /></ProtectedRoutes>
         },
-      ],
+        // {
+        //   path: '/account/edit',
+        //   element: <ProtectedRoutes><EditProfile /></ProtectedRoutes>
+        // },
+        // {
+        //   path: '/chat',
+        //   element: <ProtectedRoutes><ChatPage /></ProtectedRoutes>
+        // },
+      ]
     },
-    ,
     {
-      path: "/login",
-      element: <Login />,
+      path: '/login',
+      element: <Login />
     },
     {
-      path: "/signup",
-      element: <Signup />,
-    },
+      path: '/signup',
+      element: <Signup />
+    }
   ]);
   return (
     <>

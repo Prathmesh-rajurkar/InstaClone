@@ -18,10 +18,22 @@ app.get('/', (req, res) => {
 })
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: 'https://instaclone-wxtx.onrender.com',
-  credentials: true
-}));
+const allowedOrigins = [
+    'http://localhost:5173/', // for local development
+    'https://instagram-sigma-sable.vercel.app/' // your deployed frontend
+  ];
+  
+  app.use(cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // Allow non-browser tools like Postman
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true, // if using cookies or sessions
+  }));
 app.use(urlencoded({ extended: true }));
 
 // APIs
